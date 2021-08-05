@@ -1,11 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { UserType } from 'src/user/user.type';
 import { UserRepository } from 'src/user/user.repository';
 import { LoginUserInput } from './dto/auth.input';
+import { AuthType } from './auth.type';
 
 @Injectable()
 export class AuthService {
@@ -26,14 +27,12 @@ export class AuthService {
 
   async login(
     loginUserInput: LoginUserInput,
-  ): Promise<{ access_token: string }> {
-    const { id, email: userEmail } = await this.validate(loginUserInput);
-    const payload = {
-      sub: id,
-      username: userEmail,
-    };
+  ): Promise<AuthType> {
+    const user = await this.validate(loginUserInput);
+   
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: await this.generateAccessToken(user),
+      refresh_token: await this.generateRefreshToken(user)
     };
   }
 
@@ -44,4 +43,29 @@ export class AuthService {
     });
     return await this.userRepo.findOne(decoded.username);
   }
+
+  async generateRefreshToken(user: UserType){
+    const secret = this.configServ.get<string>('REFRESH_TOKEN_KEY');
+    const { id } = user
+    return this.jwtService.sign({}, {
+      expiresIn: '7d',
+      subject: String(id),
+      jwtid: String(id),
+      secret
+    })
+  }
+
+  // async jwtRefreshVerify(refreshToken: string){
+  //   const secret = 'hola';
+  //   return this.jwtService.verify(refreshToken)
+  // }
+
+  async generateAccessToken(user: UserType){
+    const payload: JwtSignOptions = {
+      subject: String(user.id)
+    };
+    return this.jwtService.sign(payload)
+  }
+
+
 }
