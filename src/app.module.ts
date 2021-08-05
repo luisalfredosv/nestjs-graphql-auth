@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
 import { GraphQLModule } from '@nestjs/graphql';
+
 import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [ UsersModule, PrismaModule ,GraphQLModule.forRoot({
+  imports: [
+    UserModule,
+    AuthModule,
+    PrismaModule,
+    GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: true,
-      debug: true
+      debug: true,
     }),
   ],
-  controllers: [],
-  providers: [PrismaModule],
 })
 export class AppModule {}
