@@ -22,6 +22,11 @@ export class AuthResolver {
     return await this.authService.login(loginUserInput)
   }
 
+  @Mutation(() => String )
+  async refreshToken(@Args('refreshToken') refreshToken: string) {
+    return refreshToken
+  }
+
   @Query((returns) => UserType)
   @UseGuards(GqlAuthGuard)
   async profileUser(@GetUser() user: UserType) {
