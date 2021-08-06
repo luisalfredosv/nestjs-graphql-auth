@@ -9,19 +9,15 @@ import { AuthService } from '../auth.service';
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   constructor(private readonly authService: AuthService) {
     super({
-      idField: 'id',
-    });
+      usernameField: 'email',
+    });   
   }
-
-  async validate(username: string, password: string): Promise<UserType> {
-   try {
-    const user = await this.authService.validate({ email: username , password });
+  
+  async validate(email: string, password: string): Promise<UserType> {
+    const user = await this.authService.validateUser({ email, password });
     if (!user) {
-      throw new UnauthorizedException('Unauthorized');
+      throw new UnauthorizedException();
     }
     return user;
-   } catch (error) {
-     throw new InternalServerErrorException('x5559494')
-   }
   }
 }
