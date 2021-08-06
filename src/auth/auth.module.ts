@@ -9,14 +9,14 @@ import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { LocalStrategy } from './guards/local-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategies';
+import { LocalStrategy } from './strategies/local.strategies';
 
 @Module({
   imports: [
     ConfigModule,
     PassportModule.register({
-      defaultStrategy: 'jwt',
+      defaultStrategy: 'jwt'
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -33,14 +33,13 @@ import { JwtStrategy } from './strategies/jwt.strategies';
   ],
   exports: [AuthService],
   providers: [
+    AuthService,
     JwtStrategy,
     LocalStrategy,
-    AuthService,
     AuthResolver,
     UserService,
     UserRepository,
     PrismaService,
-    AuthService,
   ],
 })
 export class AuthModule {}

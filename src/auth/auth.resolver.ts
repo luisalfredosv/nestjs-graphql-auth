@@ -3,11 +3,12 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { AuthService } from './auth.service';
 import { AuthType } from './auth.type';
-import { GetUser } from './decorators/get-user.decorator';
+import { CurrentUser  } from './decorators/get-user.decorator';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { LoginUserInput } from "./dto/auth.input";
 import { UserRepository } from 'src/user/user.repository';
 import { UserType } from 'src/user/user.type';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 
 @Resolver()
@@ -17,9 +18,10 @@ export class AuthResolver {
     private userRepo: UserRepository
     ) {}
 
-  @Mutation(() => AuthType )
-  async login(@Args('loginUserInput') loginUserInput : LoginUserInput) {
-    return await this.authService.login(loginUserInput)
+  @Mutation(() => AuthType)//String)  
+  @UseGuards(LocalAuthGuard)
+  async login(@Args('loginUserInput') loginUserInput : LoginUserInput, @CurrentUser () user: UserType) {
+    return await this.authService.login(user)
   }
 
   @Mutation(() => String )
@@ -29,7 +31,7 @@ export class AuthResolver {
 
   @Query((returns) => UserType)
   @UseGuards(GqlAuthGuard)
-  async profileUser(@GetUser() user: UserType) {
+  async profileUser(@CurrentUser () user: UserType) {
     return await this.userRepo.findUserById(user.id);
   }
   

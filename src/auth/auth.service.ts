@@ -16,19 +16,22 @@ export class AuthService {
     private userRepo: UserRepository,
   ) {}
 
-  async validate(loginUserInput: LoginUserInput) {
+  async validateUser(loginUserInput: LoginUserInput) {
     const { password } = loginUserInput;
     const findUser = await this.userRepo.findOne(loginUserInput);
     if (findUser && bcrypt.compareSync(password, findUser.password)) {
-      return findUser;
+      // const { password, ...rest } = findUser
+      // return rest;
+      return findUser
     }
-    throw new UnauthorizedException('Wrong email or password');
+    // throw new UnauthorizedException('Wrong email or password');
+    return null;
   }
 
   async login(
-    loginUserInput: LoginUserInput,
+    user: any,
   ): Promise<AuthType> {
-    const user = await this.validate(loginUserInput);
+    // const user = await this.validateUser(loginUserInput);
    
     return {
       access_token: await this.generateAccessToken(user),
@@ -51,7 +54,8 @@ export class AuthService {
       expiresIn: '7d',
       subject: String(id),
       jwtid: String(id),
-      secret
+      secret,
+
     })
   }
 
