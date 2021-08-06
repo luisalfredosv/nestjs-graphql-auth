@@ -8,7 +8,7 @@ import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
 
-async function bootstrap() {  
+async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
 
@@ -17,11 +17,11 @@ async function bootstrap() {
   app.use(compression());
 
   const prismaService: PrismaService = app.get(PrismaService);
-  prismaService.enableShutdownHooks(app)
+  prismaService.enableShutdownHooks(app);
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const PORT = process.env.PORT || 3000
+  const PORT = process.env.PORT || 3000;
 
   await app.listen(PORT);
 

@@ -11,6 +11,7 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategies';
 import { LocalStrategy } from './strategies/local.strategies';
+import { RefreshJwtStrategy } from './strategies/refreshjwt.strategies';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { LocalStrategy } from './strategies/local.strategies';
     AuthService,
     JwtStrategy,
     LocalStrategy,
+    RefreshJwtStrategy,
     AuthResolver,
     UserService,
     UserRepository,

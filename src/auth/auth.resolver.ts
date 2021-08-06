@@ -9,6 +9,7 @@ import { LoginUserInput } from "./dto/auth.input";
 import { UserRepository } from 'src/user/user.repository';
 import { UserType } from 'src/user/user.type';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshJwtAuthGuard } from './guards/refreshjwt.auth.guard';
 
 
 @Resolver()
@@ -18,15 +19,16 @@ export class AuthResolver {
     private userRepo: UserRepository
     ) {}
 
-  @Mutation(() => AuthType)//String)  
+  @Mutation(() => AuthType)  
   @UseGuards(LocalAuthGuard)
   async login(@Args('loginUserInput') loginUserInput : LoginUserInput, @CurrentUser () user: UserType) {
     return await this.authService.login(user)
   }
 
-  @Mutation(() => String )
-  async refreshToken(@Args('refreshToken') refreshToken: string) {
-    return refreshToken
+  @Mutation(() => UserType )
+  @UseGuards(RefreshJwtAuthGuard)
+  async refreshToken(@Args('refreshToken') refreshToken: string, @CurrentUser () user: UserType) {
+    return user
   }
 
   @Query((returns) => UserType)
