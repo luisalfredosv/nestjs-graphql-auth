@@ -14,6 +14,7 @@ async function bootstrap() {
 
   // app.use(helmet());
   // app.use(csurf());
+  
   app.use(compression());
 
   const prismaService: PrismaService = app.get(PrismaService);
