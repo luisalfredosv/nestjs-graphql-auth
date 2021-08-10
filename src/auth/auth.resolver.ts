@@ -25,7 +25,7 @@ export class AuthResolver {
     return await this.authService.login(user)
   }
 
-  @Mutation(() => UserType )
+  @Mutation(() => AuthType )
   @UseGuards(RefreshJwtAuthGuard)
   async refreshToken(@Args('refreshToken') refreshToken: string, @CurrentUser () user: UserType) {
     return user

@@ -11,6 +11,4 @@ export class RefreshJwtAuthGuard extends AuthGuard('refreshToken') {
         return req;
     }
 
-
-    // 
 }

@@ -31,11 +31,11 @@ export class AuthService {
   async login(
     user: any,
   ): Promise<AuthType> {
-    // const user = await this.validateUser(loginUserInput);
-   
+   const accessToken = await this.generateAccessToken(user)
+   const refreshToken = await this.generateRefreshToken(user)
     return {
-      access_token: await this.generateAccessToken(user),
-      refresh_token: await this.generateRefreshToken(user)
+      accessToken,
+      refreshToken
     };
   }
 
@@ -58,11 +58,6 @@ export class AuthService {
 
     })
   }
-
-  // async jwtRefreshVerify(refreshToken: string){
-  //   const secret = 'hola';
-  //   return this.jwtService.verify(refreshToken)
-  // }
 
   async generateAccessToken(user: UserType){
     const payload: JwtSignOptions = {
